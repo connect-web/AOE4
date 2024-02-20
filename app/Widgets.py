@@ -127,7 +127,7 @@ class OverlayButtons(QWidget):
 
 
 class OverlayWidget(QWidget):
-    def __init__(self, text, x, y, maxWidth=200, maxHeight=50, color='green', css=None, font = None, font_size=16):
+    def __init__(self, text, x, y, maxWidth=200, maxHeight=50, color='green', css=None, font = None, font_size=16, centre = True):
         super().__init__()
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -137,7 +137,10 @@ class OverlayWidget(QWidget):
             self.label.setStyleSheet(f"color: {color};")
         else:
             self.label.setStyleSheet(css)
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        if centre:
+            self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
 
         #self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center align the text
         self.label.setWordWrap(True)  # Enable word wrapping
@@ -171,8 +174,9 @@ class VillagerWidget(OverlayWidget):
                          x=x,
                          y=y,
                          css=f'color: {color};',
-                         maxWidth=maxwidth,
+                         maxWidth=maxWidth,
                          maxHeight=maxHeight,
                          font='whitrabt.ttf',
-                         font_size=24
+                         font_size=24,
+                         centre=False
                          )

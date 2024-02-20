@@ -29,7 +29,7 @@ class Resources(load_css):
         self.overlayButtons.show()
 
     def vars(self):
-        self.y_start = 1205
+        self.y_start = 1210
         self.line_height = 50
         self.y_axis = {
             'food': self.y_start,
@@ -68,28 +68,28 @@ class Resources(load_css):
 
     def set_food(self, value):
         if self.food is None:
-            self.food = OverlayWidget(str(value), self.x_axis, self.y_axis.get('food'))
+            self.food = VillagerWidget(str(value), self.x_axis, self.y_axis.get('food'))
             self.food.show()
         else:
             self.food.setText(str(value))
 
     def set_wood(self, value):
         if self.wood is None:
-            self.wood = OverlayWidget(str(value), self.x_axis, self.y_axis.get('wood'))
+            self.wood = VillagerWidget(str(value), self.x_axis, self.y_axis.get('wood'))
             self.wood.show()
         else:
             self.wood.setText(str(value))
 
     def set_gold(self, value):
         if self.gold is None:
-            self.gold = OverlayWidget(str(value), self.x_axis, self.y_axis.get('gold'))
+            self.gold = VillagerWidget(str(value), self.x_axis, self.y_axis.get('gold'))
             self.gold.show()
         else:
             self.gold.setText(str(value))
 
     def set_stone(self, value):
         if self.stone is None:
-            self.stone = OverlayWidget(str(value), self.x_axis, self.y_axis.get('stone'))
+            self.stone = VillagerWidget(str(value), self.x_axis, self.y_axis.get('stone'))
             self.stone.show()
         else:
             self.stone.setText(str(value))
