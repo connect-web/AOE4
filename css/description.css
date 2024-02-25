@@ -4,10 +4,6 @@ QWidget {
         border-radius: 15px;
         color: white;
         padding: 4px;
+        font-size: 24px;
     }
 
-
-img {
-width: 5px;
-height: 5px;
-}

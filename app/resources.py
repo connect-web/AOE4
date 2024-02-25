@@ -31,10 +31,11 @@ class Resources(load_css):
 
         super().__init__()
         self.vars()
+        self.new = True
         self.current_index = 0  # Initialize the current index for DataFrame row iteration
-        #self.df = get_dataframe('ottomans_2.html')
+        self.df = get_dataframe('ottomans_2.html')
 
-        self.df = load_build_order(BO_files.get(selected))
+        #self.df = load_build_order(BO_files.get(selected))
         self.app = QApplication(sys.argv)
         self.overlayButtons = OverlayButtons(self)
         self.description = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
@@ -43,6 +44,14 @@ class Resources(load_css):
                                          maxHeight=200,
                                          color='white',
                                          css = self.load_css('description.css')
+                                         )
+
+        self.CivMenu = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
+                                         10, 200,
+                                         maxWidth=400,
+                                         maxHeight=200,
+                                         color='white',
+                                         css=self.load_css('description.css')
                                          )
         [
             self.set_food(""), self.set_wood(""), self.set_gold(""), self.set_stone("")
@@ -77,9 +86,13 @@ class Resources(load_css):
         self.update_overlays()
 
     def next(self):
-        if self.current_index < len(self.df) - 1:
-            self.current_index += 1
-        self.update_overlays()
+        if self.new:
+            self.new = False
+            self.update_overlays()
+        else:
+            if self.current_index < len(self.df) - 1:
+                self.current_index += 1
+            self.update_overlays()
 
     def update_overlays(self):
         row = self.df.iloc[self.current_index]

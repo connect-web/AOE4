@@ -168,6 +168,18 @@ class OverlayWidget(QWidget):
 
     def setText(self, text):  # Define a method to update the text of the label
         self.label.setText(self.convert_to_html(text))
+    @staticmethod
+    def replacement_function(match):
+        file_path = match.group(1)  # Get the matched file path
+
+
+        # Extract the alt text by splitting the file path and taking the last part before '.png'
+        alt_text = file_path.split('/')[-1].split('.png')[0]
+        # Return the <img> tag with the src set to the file path, and the alt attribute set to the extracted alt text
+        image_inline = f"<img src='./pictures/{file_path}' width='50' height='50' alt='{alt_text}' title='{alt_text}'>"
+        return image_inline + f' {alt_text}'.replace("-"," ") if 'landmark_' in file_path else image_inline
+
+
 
     def convert_to_html(self,text):
         # Use a regular expression to find all occurrences of @<path>@
@@ -175,13 +187,14 @@ class OverlayWidget(QWidget):
         # The pattern looks for '@', followed by any character that is not '@' (non-greedy), followed by '@'
         # and replaces it with <img src='...'>
 
-        html_text = re.sub(r'@([^@]+)@', r"<img src='./pictures/\1' width='50' height = '50'>", text)
+        #html_text = re.sub(r'@([^@]+)@', r"<img src='./pictures/\1' width='50' height = '50'>", text)
+        html_text = re.sub(r'@([^@]+)@', OverlayWidget.replacement_function, text)
         print(html_text)
         return html_text
 
 class VillagerWidget(OverlayWidget):
     def __init__(self, text, x, y, maxWidth=200, maxHeight=50):
-        color = "green"
+        color = "cyan"
         super().__init__(text=text,
                          x=x,
                          y=y,
