@@ -4,6 +4,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from PyQt6.QtGui import QFontDatabase, QFont
 import os
+import re
+
 
 class FontStorage:
     def __init__(self):
@@ -165,7 +167,17 @@ class OverlayWidget(QWidget):
 
 
     def setText(self, text):  # Define a method to update the text of the label
-        self.label.setText(text)
+        self.label.setText(self.convert_to_html(text))
+
+    def convert_to_html(self,text):
+        # Use a regular expression to find all occurrences of @<path>@
+        # and replace them with <img src='<path>'>
+        # The pattern looks for '@', followed by any character that is not '@' (non-greedy), followed by '@'
+        # and replaces it with <img src='...'>
+
+        html_text = re.sub(r'@([^@]+)@', r"<img src='./pictures/\1' width='50' height = '50'>", text)
+        print(html_text)
+        return html_text
 
 class VillagerWidget(OverlayWidget):
     def __init__(self, text, x, y, maxWidth=200, maxHeight=50):

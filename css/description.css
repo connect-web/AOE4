@@ -5,3 +5,9 @@ QWidget {
         color: white;
         padding: 4px;
     }
+
+
+img {
+width: 5px;
+height: 5px;
+}

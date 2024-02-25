@@ -1,22 +1,46 @@
 import sys
 from PyQt6.QtWidgets import QApplication
 from app.load_css import load_css
-from app.tablexfer import get_dataframe
+from app.tablexfer import get_dataframe, load_build_order
 from app.Widgets import OverlayWidget, OverlayButtons, VillagerWidget, WindowMinimize
 
 
 class Resources(load_css):
     def __init__(self):
+        BO_files = {
+            "1": 'French 3 38 Feudal All-in_Castle Timing.bo',
+            "2": 'Ayyubids desert raider opening into FC by VortiX.bo',
+            "3": "Beastyqt mongol kashik.bo"
+        }
+        loaded = {
+            '1': 'French Rush Good VS all EXCEPT RUS & Chinese',
+            '2': 'Ayyubids desert raiders',
+            '3': 'Mongols kashik'
+        }
+        print("""
+        [1] French Rush Good VS all EXCEPT RUS & Chinese
+        [2] Ayyubids desert raiders
+        [3] Mongols kashik
+        """)
+        selected = input("Enter your choice:")
+        while BO_files.get(selected) is None:
+            print("\n Invalid choice. Please try again.")
+            selected = input("Enter your choice:")
+
+
+
         super().__init__()
         self.vars()
         self.current_index = 0  # Initialize the current index for DataFrame row iteration
-        self.df = get_dataframe('ottomans_2.html')
+        #self.df = get_dataframe('ottomans_2.html')
+
+        self.df = load_build_order(BO_files.get(selected))
         self.app = QApplication(sys.argv)
         self.overlayButtons = OverlayButtons(self)
-        self.description = OverlayWidget(str("Welcome!"),
-                                         10, 300,
+        self.description = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
+                                         10, 200,
                                          maxWidth=400,
-                                         maxHeight=100,
+                                         maxHeight=200,
                                          color='white',
                                          css = self.load_css('description.css')
                                          )
