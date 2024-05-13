@@ -1,5 +1,5 @@
 QWidget {
-        background-color: rgb(13, 48, 87);
+        background-color: rgba(13, 48, 87, 0.6);
         border: 3px solid #FEDA87;
         border-radius: 15px;
         color: white;

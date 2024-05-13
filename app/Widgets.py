@@ -6,7 +6,6 @@ from PyQt6.QtGui import QFontDatabase, QFont
 import os
 import re
 
-
 class FontStorage:
     def __init__(self):
         self._fonts = {}
@@ -29,7 +28,6 @@ font_storage = FontStorage()
 class WindowMinimize(QWidget):
     def __init__(self, resources, css=None):
         self.hidden = False
-
         self.resources = resources  # Keep a reference to the Resources instance
         super().__init__()
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool)
@@ -49,7 +47,6 @@ class WindowMinimize(QWidget):
         font_families = QFontDatabase.applicationFontFamilies(font_storage.get_font_id())
         if font_families:
             font_family = font_families[0]  # Use the first family name
-
             self.toggleButton.setFont(QFont(font_family, 12))
 
     def toggleWidgets(self):
@@ -61,8 +58,13 @@ class WindowMinimize(QWidget):
         else:
             self.toggleButton.setText("Minimize")
 
-        for widget in [self.resources.food, self.resources.wood, self.resources.gold, self.resources.stone,
-                       self.resources.description, self.resources.overlayButtons
+        for widget in [
+            self.resources.food,
+            self.resources.wood,
+            self.resources.gold,
+            self.resources.stone,
+            self.resources.description,
+            self.resources.overlayButtons
                        ]:
             widget.setHidden(not widget.isHidden())
 
@@ -85,8 +87,6 @@ class OverlayButtons(QWidget):
         self.nextButton.clicked.connect(self.resources.next)
         self.nextButton.setGeometry(150, 10, 100, 40)  # Position inside the container
 
-        #self.backButton.setStyleSheet("QPushButton { background-color: rgb(21,29,38); color: white; font-weight: 900; border: 4px solid #F3CD7C; border-radius: 20px}")
-        #self.nextButton.setStyleSheet("QPushButton { background-color: rgb(21,29,38); color: white; font-weight: 900; border: 4px solid #F3CD7C; border-radius: 20px }")
         if css is None:
             with open('css/buttons.css', 'r') as x:
                 buttons_css = x.read()
@@ -105,26 +105,8 @@ class OverlayButtons(QWidget):
         font_families = QFontDatabase.applicationFontFamilies(font_storage.get_font_id())
         if font_families:
             font_family = font_families[0]  # Use the first family name
-
             self.backButton.setFont(QFont(font_family, 12))
             self.nextButton.setFont(QFont(font_family, 12))
-
-
-        """
-        self.animation = QPropertyAnimation(self, b"color")
-        self.animation.setDuration(1800)  # 1 second
-        self.animation.setStartValue(QColor(255, 255, 255))
-        self.animation.setEndValue(QColor(243, 205, 124))
-
-        def enterEvent(self, event):
-            self.animation.start()
-            super(OverlayButtons, self).enterEvent(event)
-    
-        def leaveEvent(self, event):
-            self.animation.stop()
-            self.setStyleSheet(self.styleSheet())  # Reset to original style
-            super(OverlayButtons, self).leaveEvent(event)
-        """
 
 
 
@@ -172,7 +154,6 @@ class OverlayWidget(QWidget):
     def replacement_function(match):
         file_path = match.group(1)  # Get the matched file path
 
-
         # Extract the alt text by splitting the file path and taking the last part before '.png'
         alt_text = file_path.split('/')[-1].split('.png')[0]
         # Return the <img> tag with the src set to the file path, and the alt attribute set to the extracted alt text
@@ -194,7 +175,7 @@ class OverlayWidget(QWidget):
 
 class VillagerWidget(OverlayWidget):
     def __init__(self, text, x, y, maxWidth=200, maxHeight=50):
-        color = "cyan"
+        color = "white"
         super().__init__(text=text,
                          x=x,
                          y=y,
