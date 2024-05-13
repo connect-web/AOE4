@@ -3,31 +3,35 @@ from PyQt6.QtWidgets import QApplication
 from app.load_css import load_css
 from app.tablexfer import get_dataframe, load_build_order
 from app.Widgets import OverlayWidget, OverlayButtons, VillagerWidget, WindowMinimize
-
+from app.ResourceImages import ImageTextDisplay
 
 class Resources(load_css):
+    build_orders_file = False
     def __init__(self):
         BO_files = {
             "1": 'French 3 38 Feudal All-in_Castle Timing.bo',
             "2": 'Ayyubids desert raider opening into FC by VortiX.bo',
-            "3": "Beastyqt mongol kashik.bo"
+            "3": "Beastyqt mongol kashik.bo",
+            "4": "Zhu Xi's Legacy Fast Aggression [ Beasty ].bo",
+            "5": "Rus 2 TC.bo"
+
         }
         loaded = {
             '1': 'French Rush Good VS all EXCEPT RUS & Chinese',
             '2': 'Ayyubids desert raiders',
-            '3': 'Mongols kashik'
+            '3': 'Mongols kashik',
+            '4': 'Zhu Xi Legacy',
+            '5': 'RUS 2 TC'
         }
         print("""
         [1] French Rush Good VS all EXCEPT RUS & Chinese
         [2] Ayyubids desert raiders
         [3] Mongols kashik
+        [4] Zhu Xi's Legacy Fast Aggression
+        [5] Rus 2TC
         """)
-        selected = input("Enter your choice:")
-        while BO_files.get(selected) is None:
-            print("\n Invalid choice. Please try again.")
-            selected = input("Enter your choice:")
 
-
+        selected = '1'
 
         super().__init__()
         self.vars()
@@ -35,7 +39,15 @@ class Resources(load_css):
         self.current_index = 0  # Initialize the current index for DataFrame row iteration
         self.df = get_dataframe('ottomans_2.html')
 
-        #self.df = load_build_order(BO_files.get(selected))
+        if self.build_orders_file:
+            selected = input("Enter your choice:")
+            while BO_files.get(selected) is None:
+                print("\n Invalid choice. Please try again.")
+                selected = input("Enter your choice:")
+
+            self.df = load_build_order(BO_files.get(selected))
+
+
         self.app = QApplication(sys.argv)
         self.overlayButtons = OverlayButtons(self)
         self.description = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
