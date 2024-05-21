@@ -4,6 +4,25 @@ import os
 import json
 import re
 
+def select_build_order_file():
+    BO_files = {
+        "1": 'French 3 38 Feudal All-in_Castle Timing.bo',
+        "2": 'Ayyubids desert raider opening into FC by VortiX.bo',
+        "3": "Beastyqt mongol kashik.bo",
+        "4": "Zhu Xi's Legacy Fast Aggression [ Beasty ].bo",
+        "5": "Rus 2 TC.bo"
+    }
+    for number, name in BO_files.items():
+        print(f'[{number}] {name}')
+    selected = input("Enter your choice:")
+    while BO_files.get(selected) is None:
+        print("\n Invalid choice. Please try again.")
+        selected = input("Enter your choice:")
+
+    df = load_build_order_file(BO_files.get(selected))
+    return df
+
+
 def get_dataframe(filename = 'ottomans_1.html'):
     with open(os.path.join('pages',filename), 'r', encoding='utf-8') as x:
         tableHtml = x.read()
@@ -24,7 +43,7 @@ def get_dataframe(filename = 'ottomans_1.html'):
     df = pd.DataFrame(data, columns=headers)
     return df
 
-def load_build_order(build_name="HRE Fast Castle.bo"):
+def load_build_order_file(build_name="HRE Fast Castle.bo"):
     with open(os.path.join('build_orders', build_name), 'r', encoding='utf-8') as x:
         content = json.loads(x.read())
     """
