@@ -1,12 +1,12 @@
 import os
-class load_css:
+class CssCache:
     def __init__(self):
         self._files = {}
 
     def save_content(self, filename, content):
         self._files[filename] = content
 
-    def load_css(self, filename):
+    def load(self, filename):
         """
         Loads Css file and caches the contents in dict.
 
@@ -20,3 +20,5 @@ class load_css:
             self.save_content(filename, content)
 
         return content
+
+css_cache = CssCache()

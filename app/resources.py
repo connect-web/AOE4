@@ -1,147 +1,105 @@
 import sys
+
+import pandas as pd
 from PyQt6.QtWidgets import QApplication
-from app.load_css import load_css
+from app.css_cache import css_cache
 from app.tablexfer import get_dataframe, load_build_order
-from app.Widgets import OverlayWidget, OverlayButtons, VillagerWidget, WindowMinimize
+from app.BaseWidgets import OverlayWidget, NavigationButtons, ResourceWidget, MinimizeWidget
 from app.ResourceImages import ImageTextDisplay
 
-class Resources(load_css):
-    build_orders_file = False
-    def __init__(self):
-        BO_files = {
-            "1": 'French 3 38 Feudal All-in_Castle Timing.bo',
-            "2": 'Ayyubids desert raider opening into FC by VortiX.bo',
-            "3": "Beastyqt mongol kashik.bo",
-            "4": "Zhu Xi's Legacy Fast Aggression [ Beasty ].bo",
-            "5": "Rus 2 TC.bo"
 
+class DataframeNavigator:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+        self.current_index = 0
+        self.displayedFirstInstruction = False
+
+    def get_row_as_dict(self):
+        row = self.df.iloc[self.current_index]
+        map = {
+            'description': row.iloc[1],
+            'food': row.iloc[2],
+            'wood': row.iloc[3],
+            'gold': row.iloc[4],
+            'stone': row.iloc[5]
         }
-        loaded = {
-            '1': 'French Rush Good VS all EXCEPT RUS & Chinese',
-            '2': 'Ayyubids desert raiders',
-            '3': 'Mongols kashik',
-            '4': 'Zhu Xi Legacy',
-            '5': 'RUS 2 TC'
-        }
-        print("""
-        [1] French Rush Good VS all EXCEPT RUS & Chinese
-        [2] Ayyubids desert raiders
-        [3] Mongols kashik
-        [4] Zhu Xi's Legacy Fast Aggression
-        [5] Rus 2TC
-        """)
 
-        selected = '1'
-
-        super().__init__()
-        self.vars()
-        self.new = True
-        self.current_index = 0  # Initialize the current index for DataFrame row iteration
-        self.df = get_dataframe('ottomans_2.html')
-
-        if self.build_orders_file:
-            selected = input("Enter your choice:")
-            while BO_files.get(selected) is None:
-                print("\n Invalid choice. Please try again.")
-                selected = input("Enter your choice:")
-
-            self.df = load_build_order(BO_files.get(selected))
-
-
-        self.app = QApplication(sys.argv)
-        self.overlayButtons = OverlayButtons(self)
-        self.description = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
-                                         10, 200,
-                                         maxWidth=400,
-                                         maxHeight=200,
-                                         color='white',
-                                         css = self.load_css('description.css')
-                                         )
-
-        self.CivMenu = OverlayWidget(str(f"Loaded {loaded.get(selected)}"),
-                                         10, 200,
-                                         maxWidth=400,
-                                         maxHeight=200,
-                                         color='white',
-                                         css=self.load_css('description.css')
-                                         )
-        [
-            self.set_food(""), self.set_wood(""), self.set_gold(""), self.set_stone("")
-        ]
-        self.WindowMinimize = WindowMinimize(self, css= self.load_css('Minimize.css'))
-        self.WindowMinimize.show()
-        self.description.show()
-        self.overlayButtons.show()
-
-    def vars(self):
-        self.y_start = 1210
-        self.line_height = 50
-        self.y_axis = {
-            'food': self.y_start,
-            'wood': self.y_start + 1 * self.line_height,
-            'gold': self.y_start + 2 * self.line_height,
-            'stone': self.y_start + 3 * self.line_height
-        }
-        self.x_axis = 220
-
-        self.food = None
-        self.wood = None
-        self.gold = None
-        self.stone = None
-
-
-
+        return map
 
     def back(self):
         if self.current_index > 0:
             self.current_index -= 1
-        self.update_overlays()
+        return self.get_row_as_dict()
 
     def next(self):
-        if self.new:
-            self.new = False
-            self.update_overlays()
-        else:
+        if self.displayedFirstInstruction:
             if self.current_index < len(self.df) - 1:
                 self.current_index += 1
-            self.update_overlays()
-
-    def update_overlays(self):
-        row = self.df.iloc[self.current_index]
-
-        self.description.setText(row[1])
-        self.set_food(row[2])
-        self.set_wood(row[3])
-        self.set_gold(row[4])
-        self.set_stone(row[5])
-
-    def set_food(self, value):
-        if self.food is None:
-            self.food = VillagerWidget(str(value), self.x_axis, self.y_axis.get('food'))
-            self.food.show()
         else:
-            self.food.setText(str(value))
+            self.displayedFirstInstruction = True
 
-    def set_wood(self, value):
-        if self.wood is None:
-            self.wood = VillagerWidget(str(value), self.x_axis, self.y_axis.get('wood'))
-            self.wood.show()
-        else:
-            self.wood.setText(str(value))
+        return self.get_row_as_dict()
 
-    def set_gold(self, value):
-        if self.gold is None:
-            self.gold = VillagerWidget(str(value), self.x_axis, self.y_axis.get('gold'))
-            self.gold.show()
-        else:
-            self.gold.setText(str(value))
 
-    def set_stone(self, value):
-        if self.stone is None:
-            self.stone = VillagerWidget(str(value), self.x_axis, self.y_axis.get('stone'))
-            self.stone.show()
-        else:
-            self.stone.setText(str(value))
+def build_order_files():
+    BO_files = {
+        "1": 'French 3 38 Feudal All-in_Castle Timing.bo',
+        "2": 'Ayyubids desert raider opening into FC by VortiX.bo',
+        "3": "Beastyqt mongol kashik.bo",
+        "4": "Zhu Xi's Legacy Fast Aggression [ Beasty ].bo",
+        "5": "Rus 2 TC.bo"
+
+    }
+    loaded = {
+        '1': 'French Rush Good VS all EXCEPT RUS & Chinese',
+        '2': 'Ayyubids desert raiders',
+        '3': 'Mongols kashik',
+        '4': 'Zhu Xi Legacy',
+        '5': 'RUS 2 TC'
+    }
+    print("""
+            [1] French Rush Good VS all EXCEPT RUS & Chinese
+            [2] Ayyubids desert raiders
+            [3] Mongols kashik
+            [4] Zhu Xi's Legacy Fast Aggression
+            [5] Rus 2TC
+            """)
+    # selected = input("Enter your choice:")
+    while BO_files.get(selected) is None:
+        print("\n Invalid choice. Please try again.")
+        selected = input("Enter your choice:")
+
+    df = load_build_order(BO_files.get(selected))
+    return df
+
+
+class Resources(ResourceWidget):
+    default_values = {'food': "", "wood": "", "stone": "", "gold": ""}
+
+    def __init__(self):
+        super().__init__()
+        self.df_manager = DataframeNavigator(df=get_dataframe('ottomans_2.html'))
+        self.app = QApplication(sys.argv)
+        self.navigationButtons = NavigationButtons(self)
+        self.description = OverlayWidget(text=f"Loaded ottomans",
+                                         size=(10, 200, 400, 200),
+                                         css=css_cache.load('description.css')
+                                         )
+        self.MinimizeWidget = MinimizeWidget(self, css=css_cache.load('Minimize.css'))
+
+        self.update_map(self.default_values)
+
+    def back(self):
+        self.update_overlays(self.df_manager.back())
+
+    def next(self):
+        self.update_overlays(self.df_manager.next())
+
+    def update_overlays(self, update_dict):
+        self.update_map(update_dict)
+        self.description.setText(
+            update_dict.get('description', '')
+        )
 
     def run(self):
         sys.exit(self.app.exec())
