@@ -80,6 +80,7 @@ class MinimizeWidget(BaseWidget):
             self.resources.stone, self.resources.description,
             self.resources.navigationButtons
         ]
+        print(self.widgets)
 
         self.toggleButton = BaseButton(size=(10, 10, 100, 40), text="Minimize", parent=self, stylesheet=css)
         self.toggleButton.clicked.connect(self.toggleWidgets)
